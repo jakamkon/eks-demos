@@ -15,6 +15,10 @@ cd eks-demos
 
 ### Get into the first pod
     kubectl exec webapp1 -ti -- /bin/bash
+### Inside the container, access running server:
+    curl localhost
 
 ### Forward Pod port to your local port local-port:pod-port
-    kubectl port-forward webapp1 8080:80
+    kubectl port-forward  --address 0.0.0.0 webapp1 8080:80
+### Click on top right on triple bar and choose Traffic/Ports then Host1 port 8080
+
