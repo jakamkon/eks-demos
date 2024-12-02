@@ -30,9 +30,20 @@ cd eks-demos
     kubectl apply -f 1_simple-service.yaml
     kubectl get svc service -o wide
 
+### You can test the new service from inside one of the pods
+    kubectl exec webapp1 -ti -- /bin/bash
+    for i in $(seq 10); do curl service;done
+
 ### Forward service port to a localport
     kubectl port-forward service/service 8080:80
 ### Click on top right on triple bar and choose Traffic/Ports then Host1 port 8080
 
 ### Service will create an endpoint for each pod
     kubectl get endpoints service -o yaml
+
+### Where are those pods running?
+    kubectl get nodes
+    kubectl describe nodes
+
+### Check which node is used to run this pod
+    kubectl describe pods webapp1
