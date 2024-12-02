@@ -85,7 +85,7 @@ cd eks-demos
 There are some parts of a pod that we cannot change once it's been created, in our case it's `spec.containers[*].image`
 
 We have to delete the current pod and create a new one with a new 
-configuration
+configuration:
 
     kubectl replace --force -f 1_simple-pod-configmap-env-v2.yaml
     kubectl exec pod-configmap-env -- env | grep -i SPECIAL
@@ -95,15 +95,17 @@ configuration
     kubectl get deployment 
     kubectl get pods -l app=webapp-d
 
-Check newly created env var from ConfigMap
+Check newly created env var from ConfigMap:
+
     kubectl exec webapp-deployment-UUID -- env | grep -i special
 
 ### You can simply do a new deployment and new old pods will be
-### replaces with a pods with a new configuration
+### replaced with pods with a new configuration
     kubectl apply -f 1_deployment-configmap-v2.yaml
     kubectl get pods -l app=webapp-d
 
-This time the UUID will be different since we've got a few totally new pods
+This time the UUID will be different since we've got a few totally new pods:
+
     kubectl exec webapp-deployment-UUID -- env | grep -i special
 
 
