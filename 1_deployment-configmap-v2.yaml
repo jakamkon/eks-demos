@@ -20,8 +20,12 @@ spec:
         app: webapp-d
     spec:
       containers:
-      - name: httpd
-        image: httpd
+      - name: nginx
+        image: nginx
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "hostname > /usr/share/nginx/html/index.html"]
         env:
           # Define the environment variable
           - name: SPECIAL_LEVEL_KEY

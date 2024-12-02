@@ -108,6 +108,31 @@ This time the UUID will be different since we've got a few totally new pods:
 
     kubectl exec webapp-deployment-UUID -- env | grep -i special
 
+### Now you scale in and out your pods
+    kubectl scale --replicas=10 deployment/webapp-deployment
+    kubectl get deployment
+    kubectl get pods
+    kubectl scale --replicas=1 deployment/webapp-deployment
+    kubectl get deployment
+    kubectl get pods
+
+### To access all of the pods you also need to create a service
+### for this deployment
+    kubectl scale --replicas=5 deployment/webapp-deployment
+    kubectl apply -f 1_service-for-deployment.yaml
+    kubectl get svc
+
+You can also test out the service with all those new pods:
+
+    kubectl get pods -l app=webapp-d
+    kubectl exec webapp-deployment-UUID -ti -- /bin/bash
+    for i in $(seq 10); do curl webapp-d-service;done
+
+
+
+
+
+
 
 
 
