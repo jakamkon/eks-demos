@@ -13,4 +13,4 @@ spec:
     lifecycle:
       postStart:
         exec:
-          command: ["/bin/sh", "-c", "hostname -i > /usr/share/nginx/html/index.html"]
+          command: ["/bin/sh", "-c", "hostname > /usr/share/nginx/html/index.html"]
