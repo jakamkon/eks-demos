@@ -29,6 +29,10 @@ cd eks-demos
 ### Create a service that will be a single endpoint for pods
     kubectl apply -f 1_simple-service.yaml
     kubectl get svc service -o wide
-    
+
+### Forward service port to a localport
+    kubectl port-forward service/service 8080:80
+### Click on top right on triple bar and choose Traffic/Ports then Host1 port 8080
+
 ### Service will create an endpoint for each pod
     kubectl get endpoints service -o yaml
