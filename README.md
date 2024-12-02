@@ -13,8 +13,11 @@ cd eks-demos
 ### Check if pods are running
     kubectl get pods
 
+## How do we access a pod?
+
 ### Get into the first pod
     kubectl exec webapp1 -ti -- /bin/bash
+
 ### Inside the container, access running server:
     curl localhost
 
@@ -22,3 +25,10 @@ cd eks-demos
     kubectl port-forward  --address 0.0.0.0 webapp1 8080:80
 ### Click on top right on triple bar and choose Traffic/Ports then Host1 port 8080
 
+## How do you access all pods?
+### Create a service that will be a single endpoint for pods
+    kubectl apply -f 1_simple-service.yaml
+    kubectl get svc service -o wide
+    
+### Service will create an endpoint for each pod
+    kubectl get endpoints service -o yaml
