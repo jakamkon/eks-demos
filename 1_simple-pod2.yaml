@@ -10,3 +10,7 @@ spec:
     image: nginx
     ports:
     - containerPort: 80
+    lifecycle:
+      postStart:
+        exec:
+          command: ["/bin/sh", "-c", "hostname -i > /usr/share/nginx/html/index.html"]
