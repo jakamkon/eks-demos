@@ -39,7 +39,7 @@ cd eks-demos
     for i in $(seq 10); do curl service;done
 
 ### 9.Forward service port to a localport
-    kubectl port-forward service/service 8080:80
+    kubectl port-forward --address 0.0.0.0 service/service 8080:80
 ### 10. Click on top right on triple bar and choose Traffic/Ports then Host1 port 8080
 
 ### 11. Service will create an endpoint for each pod
@@ -161,8 +161,7 @@ and how many nodes we have:
 
 ### 4. Run some pods in each:
     kubectl apply -f https://k8s.io/examples/pods/simple-pod.yaml --namespace=fargate-ns 
-    kubectl apply -f https://k8s.io/examples/pods/simple-pod.yaml \ 
-								--namespace=managed-nodes
+    kubectl apply -f https://k8s.io/examples/pods/simple-pod.yaml --namespace=managed-nodes
     kubectl get pods -A
 
 ### 5. Fargate won't work - namespace is fine, but also needs a label:
