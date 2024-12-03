@@ -128,7 +128,7 @@ You can also test out the service with all those new pods:
     kubectl exec webapp-deployment-UUID -ti -- /bin/bash
     for i in $(seq 10); do curl webapp-d-service;done
 
-## Module 2
+## Module 2,3
 ### 1. Create a custom EKS cluster with one managed group and fargate profile.
 We will run some pods on both and see how each of them will scale.
 
@@ -184,6 +184,30 @@ m - min, M - max, N - nodes (desired number of nodes)
 ### 7. Let's check if we have scaled:
     kubectl get nodes
     kubectl get pods --namespace=managed-nodes
+
+## Module 4
+### Using ECR
+### Build an image:
+    docker build  --platform="linux/amd64" -t hello-world .
+    docker images
+### Create ECR repo
+    aws ecr create-repository --repository-name demo-repo
+    aws ecr describe-repositories | grep repositoryName | grep demo-repo
+### Login to ECR
+    aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 848718099117.dkr.ecr.eu-central-1.amazonaws.com
+### Tag our image for ECR
+    docker tag hello-world:latest 848718099117.dkr.ecr.eu-central-1.amazonaws.com/demo-repo
+### Push our image to our ECR repository
+    docker push 848718099117.dkr.ecr.eu-central-1.amazonaws.com/demo-repo
+### Check if our image is there:
+    aws ecr list-images --repository-name demo-repo
+### Check for scan findings:
+    aws ecr describe-image-scan-findings --repository-name demo-repo --image-id imageTag=latest
+### Deploy to cluster (our nodes need to have permissions to read ECR repo):
+    kubectl apply -f 4_pod-using-ecr.yaml
+
+
+
 
 
 
