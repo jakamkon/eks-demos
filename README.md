@@ -1,5 +1,5 @@
 Url shortcut for this repo:
-## https://t.ly/eks-demos
+## t.ly/eks-demos
 (doesn't work with clone repo)
 
 Sign in for free into 
