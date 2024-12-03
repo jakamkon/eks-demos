@@ -128,6 +128,70 @@ You can also test out the service with all those new pods:
     kubectl exec webapp-deployment-UUID -ti -- /bin/bash
     for i in $(seq 10); do curl webapp-d-service;done
 
+## Module 2
+### 1. Create a custom EKS cluster with one managed group and fargate profile.
+We will run some pods on both and see how each of them will scale.
+
+Note: This won't work in killacoda sandbox environment from previous module since
+you've already have a cluster.
+
+    eksctl create cluster -f 2_custom-cluster-fargate.yaml
+    eksctl get cluster --name=small-fargate
+
+### 2. Let's check what nodegroups we have:
+
+    eksctl get nodegroup --cluster=small-fargate
+
+Before we use kubectl, let's check if our new cluster (small-fargate) is the current one (after using eksctl create cluster usually it is):
+    kubectl config current-context
+
+If not, let's switch:
+
+    kubectl config get-contexts
+    kubectl config set current-context small-farage-context
+    kubectl config current-context
+
+and how many nodes we have:
+
+    kubectl get nodes
+
+### 3. Create two namespaces, one for a managed node group and one for fargate:
+    kubectl create namespace fargate-ns
+    kubectl create namespace managed-nodes
+
+### 4. Run some pods in each:
+    kubectl apply -f https://k8s.io/examples/pods/simple-pod.yaml --namespace=fargate-ns 
+    kubectl apply -f https://k8s.io/examples/pods/simple-pod.yaml \ 
+								--namespace=managed-nodes
+    kubectl get pods -A
+
+### 5. Fargate won't work - namespace is fine, but also needs a label:
+    kubectl describe pods nginx -n fargate-ns
+    kubectl apply -f 2_fargate-pod.yaml --namespace=fargate-ns
+    kubectl describe pods webapp1 -n fargate-ns
+
+### 6. Since we don't have any nodes in a managed group no pods will be created there:
+    kubectl describe pods --namespace=managed-nodes
+
+But Fargate namespace will scale automaticly:
+
+    kubectl get pods --namespace=fargate-ns
+
+### 6. To run some pods on a managed group we need to excplicilty scale it:
+m - min, M - max, N - nodes (desired number of nodes)
+
+    eksctl scale nodegroup --name=ng1 --cluster=small-fargate -m=1 -M=1 -N=1
+### 7. Let's check if we have scaled:
+    kubectl get nodes
+    kubectl get pods --namespace=managed-nodes
+
+
+
+
+
+
+
+
 
 
 
