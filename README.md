@@ -1,10 +1,10 @@
+Url shortcut for this repo:
+## https://t.ly/eks-demos
+(doesn't work with clone repo)
+
 Sign in for free into 
 https://killercoda.com/playgrounds/course/kubernetes-playgrounds/two-node
 to get free 1h sessions of kubernetes env to run the following examples.
-
-Url shortcut for the repo:
-## https://t.ly/eks-demos
-(doesn't work with clone repo)
 
 Once you're in the console, clone this repository:
 git clone https://github.com/jakamkon/eks-demos
