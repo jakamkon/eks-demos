@@ -143,6 +143,7 @@ you've already have a cluster.
     eksctl get nodegroup --cluster=small-fargate
 
 Before we use kubectl, let's check if our new cluster (small-fargate) is the current one (after using eksctl create cluster usually it is):
+
     kubectl config current-context
 
 If not, let's switch:
@@ -204,6 +205,48 @@ m - min, M - max, N - nodes (desired number of nodes)
     aws ecr describe-image-scan-findings --repository-name demo-repo --image-id imageTag=latest
 ### Deploy to cluster (our nodes need to have permissions to read ECR repo):
     kubectl apply -f 4_pod-using-ecr.yaml
+## Module 5
+### Full AutoScaling 
+###     1. Scaling a number of nodes in the cluster with EKS Auto Mode (a new feature of EKS - 1.12.2024) - it's a fully managed Karpenter setup that manages nodes in your cluster
+###     2. Scaling a number of pods with Horizontal Pod Autoscaling (HPA) using metrics-server (HPA is already part of Kubernetes)
+###    
+Note: This won't work in killacoda sandbox environment - metrics-server is not reachable once installed inside the cluster
+
+### 1. To use AutoMode you need to enable it on the cluster or create a new one with AutoMode option set to true.
+### This command will create a new cluster with AutoMode enabled and no nodes.
+    eksctl create cluster -f custom_cluster_automode.yaml
+
+### 2. Install metrics-server - HPA is using resource usage metrics from metrics-server to make descisions about how many pods do we need at any given time
+    kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+    kubectl get deployment metrics-server -n kube-system
+
+### Let's watch a few components, run each command in a separate terminal/window:
+### Watch a number of nodes (you will see one node since we're running metrics-server):
+    watch kubectl get nodes
+
+### Watch a number of pods (you will see no pods):
+    watch kubectl top pods
+
+### Watch the CPU utilization of the deployment (you will see no CPU usage - cpu: 0%/50%):
+    watch kubectl get hpa
+
+### Let's create a deployment with HPA enabled:
+    kubectl apply -f 5_deployment-with-hpa.yaml
+
+### And simulate some heavy load:
+    kubectl get pods
+    kubectl exec webapp-deployment-XYZ -ti -- /bin/bash
+
+### Inside one of the pods run:
+    apt-get update -y && apt-get install stress -y
+    stress --cpu 4 --timeout 60s
+
+### - In a few seconds you should see a spike in CPU usage on hpa.
+### - Then a number of pods will increase
+### - Then you will see a new node being provisioned
+### - Since we're simulating heavy load only for short period of time (120s) and shorten the time that pods should stick around you will see pod number go down after around two minutes and then number of nodes as well
+### You can watch what's going on here:
+    kubectl get events -w --sort-by '.lastTimestamp' 
 
 
 
