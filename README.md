@@ -256,6 +256,7 @@ to run this demo.
 
 ## Clode the repo with examples:
 git clone https://github.com/jakamkon/eks-demos
+
 cd eks-demos
 
 ## Create a new namespace 
@@ -263,18 +264,23 @@ kubectl create namespace new-ns
 
 ## Create a pod in default namespace and new-ns namespace
 kubectl apply -f 1_simple-pod.yaml
+
 kubectl apply -f 1_simple-pod.yaml -n new-ns
+
 kubectl get pods -A
 
 ## Access the first pod from the terminal
 kubectl exec webapp1 -ti -- /bin/bash
+
 ## Get POD_1_IP
 hostname -i
 
 ## Open a new tab/terminal and run the second pod
 kubectl exec -n new-ns webapp1 -ti -- /bin/bash
+
 ## Get POD_2_IP
 hostname -i
+
 curl POD_1_IP
 
 ## Go back to the first window and access POD 2
@@ -289,6 +295,7 @@ kubectl apply -f 6_simple_network_policy.yml
 ## In both windows try curl:
 ## In POD 1 window:
 curl POD_2_IP
+
 ## In POD 2 window:
 curl POD_1_IP
 
